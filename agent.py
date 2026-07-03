@@ -5,6 +5,7 @@ from opportunity_analysis import analyze_market, analyze_opportunity, analyze_co
 from database import init_db, save_idea, get_all_ideas, delete_idea
 from judge import judge_idea
 from pain_points import gather_pain_points
+from vc_research import find_vcs
 
 # =====================================
 # DATABASE INIT
@@ -272,9 +273,18 @@ Keep it between 200-400 words.>
         if "messages" in analysis_response and analysis_response["messages"]:
             analysis_text = analysis_response["messages"][-1].content
 
+    with st.spinner("💰 Searching for relevant VCs..."):
+        vc_report = find_vcs(
+            market=st.session_state.market,
+            idea_name=idea_name,
+            idea_content=idea_content,
+            pain_point=st.session_state.selected_pain_point,
+        )
+
     # Save and display
     st.markdown("---")
-    save_idea(st.session_state.market, idea_name, f"{idea_content}\n\n### Comprehensive Analysis\n{analysis_text}")
+    combined_content = f"{idea_content}\n\n### Comprehensive Analysis\n{analysis_text}\n\n### VC Investment Landscape\n{vc_report}"
+    save_idea(st.session_state.market, idea_name, combined_content)
 
     st.markdown(f"## 🚀 {idea_name}")
     st.markdown(idea_content)
@@ -283,8 +293,12 @@ Keep it between 200-400 words.>
     st.markdown("---")
     st.markdown("## 📊 Comprehensive Analysis")
     st.markdown(analysis_text)
+
+    st.markdown("---")
+    st.markdown("## 💰 VC Investment Landscape")
+    st.markdown(vc_report)
     
-    st.success("💾 Startup idea and analysis saved to database!")
+    st.success("💾 Startup idea, analysis, and VC research saved to database!")
     
     if st.button("🔄 Create Another Idea"):
         reset_state()

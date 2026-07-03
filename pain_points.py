@@ -1,7 +1,7 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from google_play_scraper import search, reviews, Sort
-from search_client import serper_search
+from search_client import web_search
 import requests
 import trafilatura
 
@@ -79,7 +79,7 @@ def _fetch_page_text(url: str, max_chars: int = 1500) -> str:
 
 def _search_snippets(query: str, max_results: int = 5) -> list[dict]:
     """Run a Google search via Serper API and return result dicts."""
-    return serper_search(query, max_results=max_results)
+    return web_search(query, max_results=max_results)
 
 
 def _format_results(results: list[dict], deep_scrape: bool = False) -> str:

@@ -8,7 +8,7 @@ to fetch live information rather than relying on LLM training data.
 
 from langchain.tools import tool
 from web_research import deep_web_research
-from search_client import serper_search
+from search_client import web_search
 import logging
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def _web_search(query: str, max_results: int = 3) -> str:
     """Run a Google search via Serper and return formatted snippets."""
-    results = serper_search(query, max_results=max_results)
+    results = web_search(query, max_results=max_results)
     if not results:
         return "No results found."
     lines = []
